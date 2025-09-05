@@ -3,7 +3,7 @@
     <h1>Fail2ban Dashboard (Dev)</h1>
     <p>API /health: <b>{{ health?.ok ? 'OK' : '...' }}</b></p>
     <div>
-      <label>日数: <input type="number" min="1" v-model.number="days" /></label>
+      <label>日数: <input v-model.number="days" type="number" min="1"></label>
       <button @click="load">読み込み</button>
     </div>
     <ul v-if="summary">
