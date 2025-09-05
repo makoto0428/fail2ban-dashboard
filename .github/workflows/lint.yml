@@ -4,28 +4,34 @@ on: [push, pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
-
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10 --activate
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.15.1
+          run_install: false
 
-      - name: Install (workspace)
-        run: |
-          pnpm i -w
-          pnpm -r i
+      - name: Get pnpm store directory
+        id: pnpm-store
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm i -w && pnpm -r i
 
       - name: Lint
         run: pnpm lint
