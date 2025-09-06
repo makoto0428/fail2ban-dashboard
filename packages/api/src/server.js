@@ -1,5 +1,5 @@
-import express from 'express'
-import morgan from 'morgan'
+import express from 'express';
+import morgan from 'morgan';
 
 /**
  * @function createApp
@@ -7,11 +7,11 @@ import morgan from 'morgan'
  * アプリ本体を作る。テストや将来の拡張のために関数化。
  */
 export function createApp() {
-  const app = express()
+  const app = express();
 
   // 便利なアクセスログ
-  app.use(morgan('dev'))
-  app.use(express.json())
+  app.use(morgan('dev'));
+  app.use(express.json());
 
   /**
    * @route GET /health
@@ -19,8 +19,8 @@ export function createApp() {
    */
   app.get('/health', (req, res) => {
     // 実際の監視ではDBやログパス検査もここでOK
-    res.json({ ok: true, service: 'api' })
-  })
+    res.json({ ok: true, service: 'api' });
+  });
 
   /**
    * @route GET /api/summary
@@ -28,7 +28,7 @@ export function createApp() {
    * MVP前のモック。前段のVueから叩いてUIを先に進める。
    */
   app.get('/api/summary', (req, res) => {
-    const days = Number(req.query.days || 14)
+    const days = Number(req.query.days || 14);
     // ダミー値
     res.json({
       rangeDays: days,
@@ -36,17 +36,17 @@ export function createApp() {
       bans: 100,
       unbans: 22,
       restores: 1,
-    })
-  })
+    });
+  });
 
-  return app
+  return app;
 }
 
 // 起動スクリプト
-const port = Number(process.env.PORT || 3000)
+const port = Number(process.env.PORT || 3000);
 if (process.env.NODE_ENV !== 'test') {
-  const app = createApp()
+  const app = createApp();
   app.listen(port, () => {
-    console.log(`API listening on http://localhost:${port}`)
-  })
+    console.log(`API listening on http://localhost:${port}`);
+  });
 }
